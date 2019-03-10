@@ -177,5 +177,28 @@ model.intercept_
 # #### 5. Predict labels for unknown data
 # 
 # Once the model is trained, the main task of supervised machine learning is to evaluate it based on what it says about new data that was not part of the training set.
+# 
 # In Scikit-Learn, this can be done using the ``predict()`` method.
+# 
 # For the sake of this example, our "new data" will be a grid of *x* values, and we will ask what *y* values the model predicts:
+
+# In[26]:
+
+
+xfit = np.linspace(-1, 11)
+xfit.shape
+
+
+# In[27]:
+
+
+Xfit = xfit[:, np.newaxis]
+yfit = model.predict(Xfit)
+
+
+# In[28]:
+
+
+plt.scatter(x, y)
+plt.plot(xfit, yfit);
+
