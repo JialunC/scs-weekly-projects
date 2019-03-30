@@ -35,7 +35,7 @@
 
 # ## 05.02 - Scikit-Learn
 
-# In[3]:
+# In[1]:
 
 
 import seaborn as sns
@@ -43,7 +43,7 @@ iris = sns.load_dataset('iris')
 iris.head()
 
 
-# In[4]:
+# In[2]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -53,7 +53,7 @@ sns.pairplot(iris, hue='species', size=1.5);
 
 # Features matrix
 
-# In[8]:
+# In[3]:
 
 
 X_iris = iris.drop('species', axis=1)
@@ -62,7 +62,7 @@ X_iris.head()
 
 # Target array
 
-# In[11]:
+# In[4]:
 
 
 y_iris = iris['species']
@@ -87,7 +87,7 @@ y_iris.head()
 
 # ### Supervised learning example: Simple linear regression
 
-# In[13]:
+# In[5]:
 
 
 import matplotlib.pyplot as plt
@@ -101,7 +101,7 @@ plt.scatter(x, y);
 
 # #### 1. Choose a class of model
 
-# In[14]:
+# In[6]:
 
 
 from sklearn.linear_model import LinearRegression
@@ -127,7 +127,7 @@ from sklearn.linear_model import LinearRegression
 # 
 # For our linear regression example, we can instantiate the ``LinearRegression`` class and specify that we would like to fit the intercept using the ``fit_intercept`` hyperparameter:
 
-# In[15]:
+# In[7]:
 
 
 model = LinearRegression(fit_intercept=True)
@@ -141,7 +141,7 @@ model
 # Here our target variable ``y`` is already in the correct form (a length-``n_samples`` array), but we need to massage the data ``x`` to make it a matrix of size ``[n_samples, n_features]``.
 # In this case, this amounts to a simple reshaping of the one-dimensional array:
 
-# In[21]:
+# In[8]:
 
 
 X = x[:, np.newaxis]
@@ -152,7 +152,7 @@ X.shape
 # 
 # This can be done with the ``fit()`` method of the model:
 
-# In[22]:
+# In[9]:
 
 
 model.fit(X, y)
@@ -162,13 +162,13 @@ model.fit(X, y)
 # 
 # In Scikit-Learn, by convention all model parameters that were learned during the ``fit()`` process have trailing underscores; for example in this linear model, we have the following:
 
-# In[23]:
+# In[10]:
 
 
 model.coef_
 
 
-# In[24]:
+# In[11]:
 
 
 model.intercept_
@@ -182,23 +182,83 @@ model.intercept_
 # 
 # For the sake of this example, our "new data" will be a grid of *x* values, and we will ask what *y* values the model predicts:
 
-# In[26]:
+# In[12]:
 
 
 xfit = np.linspace(-1, 11)
 xfit.shape
 
 
-# In[27]:
+# In[13]:
 
 
 Xfit = xfit[:, np.newaxis]
 yfit = model.predict(Xfit)
 
 
-# In[28]:
+# In[14]:
 
 
 plt.scatter(x, y)
 plt.plot(xfit, yfit);
 
+
+# ### Supervised learning example: Iris classification
+
+# Because it is so fast and has no hyperparameters to choose, Gaussian naive Bayes is often a good model to use as a baseline classification, before exploring whether improvements can be found through more sophisticated models.
+# 
+# We would like to evaluate the model on data it has not seen before, and so we will split the data into a training set and a testing set. This could be done by hand, but it is more convenient to use the `train_test_split` utility function:
+
+# In[16]:
+
+
+from sklearn.cross_validation import train_test_split
+Xtrain, Xtest, ytrain, ytest = train_test_split(
+    X_iris,
+    y_iris,
+    random_state=1
+)
+
+
+# #### choose model class
+
+# In[17]:
+
+
+from sklearn.naive_bayes import GaussianNB
+
+
+# #### instantiate model
+
+# In[18]:
+
+
+model = GaussianNB()
+
+
+# #### fit model to data
+
+# In[19]:
+
+
+model.fit(Xtrain, ytrain)
+
+
+# #### predict on new data
+
+# In[20]:
+
+
+y_model = model.predict(Xtest)
+
+
+# Finally, we can use the `accuracy_score` utility to see the fraction of predicted labels that match their true value:
+
+# In[21]:
+
+
+from sklearn.metrics import accuracy_score
+accuracy_score(ytest, y_model)
+
+
+# ### Unsupervised learning: Iris clustering
